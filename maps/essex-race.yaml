@@ -1,0 +1,407 @@
+# yaml-language-server: $schema=https://docs.maplibre-yaml.org/schema/latest/map.schema.json
+#
+# Essex County, NJ: percent of each census tract's population that was white,
+# one layer per census year. Only one layer is visible at a time; the decade
+# buttons on essex-race.html switch between them (see the <script> there).
+#
+# Data: IPUMS NHGIS (tract counts and 1940-2000 tract boundaries) and US Census
+# TIGERweb (2010 and 2020 tract boundaries). Built into data/essex-tracts-YEAR.geojson.
+# Each tract has: tract, year, total, white, nonwhite, pct_white
+# (pct_white is -1 where there is no data).
+# Tract shapes were trimmed/snapped to the municipal borders in
+# data/essex-municipalities.geojson so they line up; population counts are unchanged.
+type: map
+id: essex-race
+config:
+  mapStyle: "https://tiles.openfreemap.org/styles/positron"
+  center: [-74.245, 40.792]
+  zoom: 10.6
+
+controls:
+  navigation:
+    enabled: true
+    position: bottom-right
+
+layers:
+  - id: tracts-1940
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-tracts-1940.geojson"
+    layout:
+      visibility: visible
+    paint:
+      # Graduated colours by percent white (darker = whiter).
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, pct_white]
+        - "#bdbdbd"      # below 0: no data
+        - 0
+        - "#f1eef6"      # 0-20 %
+        - 20
+        - "#bdc9e1"      # 20-40 %
+        - 40
+        - "#74a9cf"      # 40-60 %
+        - 60
+        - "#2b8cbe"      # 60-80 %
+        - 80
+        - "#045a8d"      # 80-100 %
+      fill-opacity: 0.8
+      fill-outline-color: "rgba(255,255,255,0.6)"
+    interactive:
+      hover:
+        cursor: pointer
+        popup:
+          - strong:
+              - str: "Tract "
+              - property: tract
+          - p:
+              - property: pct_white
+              - str: "% white"
+          - p:
+              - property: white
+              - str: " white of "
+              - property: total
+              - str: " people"
+
+  - id: tracts-1950
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-tracts-1950.geojson"
+    layout:
+      visibility: none
+    paint:
+      # Graduated colours by percent white (darker = whiter).
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, pct_white]
+        - "#bdbdbd"      # below 0: no data
+        - 0
+        - "#f1eef6"      # 0-20 %
+        - 20
+        - "#bdc9e1"      # 20-40 %
+        - 40
+        - "#74a9cf"      # 40-60 %
+        - 60
+        - "#2b8cbe"      # 60-80 %
+        - 80
+        - "#045a8d"      # 80-100 %
+      fill-opacity: 0.8
+      fill-outline-color: "rgba(255,255,255,0.6)"
+
+  - id: tracts-1960
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-tracts-1960.geojson"
+    layout:
+      visibility: none
+    paint:
+      # Graduated colours by percent white (darker = whiter).
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, pct_white]
+        - "#bdbdbd"      # below 0: no data
+        - 0
+        - "#f1eef6"      # 0-20 %
+        - 20
+        - "#bdc9e1"      # 20-40 %
+        - 40
+        - "#74a9cf"      # 40-60 %
+        - 60
+        - "#2b8cbe"      # 60-80 %
+        - 80
+        - "#045a8d"      # 80-100 %
+      fill-opacity: 0.8
+      fill-outline-color: "rgba(255,255,255,0.6)"
+    interactive:
+      hover:
+        cursor: pointer
+        popup:
+          - strong:
+              - str: "Tract "
+              - property: tract
+          - p:
+              - property: pct_white
+              - str: "% white"
+          - p:
+              - property: white
+              - str: " white of "
+              - property: total
+              - str: " people"
+
+  - id: tracts-1970
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-tracts-1970.geojson"
+    layout:
+      visibility: none
+    paint:
+      # Graduated colours by percent white (darker = whiter).
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, pct_white]
+        - "#bdbdbd"      # below 0: no data
+        - 0
+        - "#f1eef6"      # 0-20 %
+        - 20
+        - "#bdc9e1"      # 20-40 %
+        - 40
+        - "#74a9cf"      # 40-60 %
+        - 60
+        - "#2b8cbe"      # 60-80 %
+        - 80
+        - "#045a8d"      # 80-100 %
+      fill-opacity: 0.8
+      fill-outline-color: "rgba(255,255,255,0.6)"
+    interactive:
+      hover:
+        cursor: pointer
+        popup:
+          - strong:
+              - str: "Tract "
+              - property: tract
+          - p:
+              - property: pct_white
+              - str: "% white"
+          - p:
+              - property: white
+              - str: " white of "
+              - property: total
+              - str: " people"
+
+  - id: tracts-1980
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-tracts-1980.geojson"
+    layout:
+      visibility: none
+    paint:
+      # Graduated colours by percent white (darker = whiter).
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, pct_white]
+        - "#bdbdbd"      # below 0: no data
+        - 0
+        - "#f1eef6"      # 0-20 %
+        - 20
+        - "#bdc9e1"      # 20-40 %
+        - 40
+        - "#74a9cf"      # 40-60 %
+        - 60
+        - "#2b8cbe"      # 60-80 %
+        - 80
+        - "#045a8d"      # 80-100 %
+      fill-opacity: 0.8
+      fill-outline-color: "rgba(255,255,255,0.6)"
+    interactive:
+      hover:
+        cursor: pointer
+        popup:
+          - strong:
+              - str: "Tract "
+              - property: tract
+          - p:
+              - property: pct_white
+              - str: "% white"
+          - p:
+              - property: white
+              - str: " white of "
+              - property: total
+              - str: " people"
+
+  - id: tracts-1990
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-tracts-1990.geojson"
+    layout:
+      visibility: none
+    paint:
+      # Graduated colours by percent white (darker = whiter).
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, pct_white]
+        - "#bdbdbd"      # below 0: no data
+        - 0
+        - "#f1eef6"      # 0-20 %
+        - 20
+        - "#bdc9e1"      # 20-40 %
+        - 40
+        - "#74a9cf"      # 40-60 %
+        - 60
+        - "#2b8cbe"      # 60-80 %
+        - 80
+        - "#045a8d"      # 80-100 %
+      fill-opacity: 0.8
+      fill-outline-color: "rgba(255,255,255,0.6)"
+    interactive:
+      hover:
+        cursor: pointer
+        popup:
+          - strong:
+              - str: "Tract "
+              - property: tract
+          - p:
+              - property: pct_white
+              - str: "% white"
+          - p:
+              - property: white
+              - str: " white of "
+              - property: total
+              - str: " people"
+
+  - id: tracts-2000
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-tracts-2000.geojson"
+    layout:
+      visibility: none
+    paint:
+      # Graduated colours by percent white (darker = whiter).
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, pct_white]
+        - "#bdbdbd"      # below 0: no data
+        - 0
+        - "#f1eef6"      # 0-20 %
+        - 20
+        - "#bdc9e1"      # 20-40 %
+        - 40
+        - "#74a9cf"      # 40-60 %
+        - 60
+        - "#2b8cbe"      # 60-80 %
+        - 80
+        - "#045a8d"      # 80-100 %
+      fill-opacity: 0.8
+      fill-outline-color: "rgba(255,255,255,0.6)"
+    interactive:
+      hover:
+        cursor: pointer
+        popup:
+          - strong:
+              - str: "Tract "
+              - property: tract
+          - p:
+              - property: pct_white
+              - str: "% white"
+          - p:
+              - property: white
+              - str: " white of "
+              - property: total
+              - str: " people"
+
+  - id: tracts-2010
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-tracts-2010.geojson"
+    layout:
+      visibility: none
+    paint:
+      # Graduated colours by percent white (darker = whiter).
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, pct_white]
+        - "#bdbdbd"      # below 0: no data
+        - 0
+        - "#f1eef6"      # 0-20 %
+        - 20
+        - "#bdc9e1"      # 20-40 %
+        - 40
+        - "#74a9cf"      # 40-60 %
+        - 60
+        - "#2b8cbe"      # 60-80 %
+        - 80
+        - "#045a8d"      # 80-100 %
+      fill-opacity: 0.8
+      fill-outline-color: "rgba(255,255,255,0.6)"
+    interactive:
+      hover:
+        cursor: pointer
+        popup:
+          - strong:
+              - str: "Tract "
+              - property: tract
+          - p:
+              - property: pct_white
+              - str: "% white"
+          - p:
+              - property: white
+              - str: " white of "
+              - property: total
+              - str: " people"
+
+  - id: tracts-2020
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-tracts-2020.geojson"
+    layout:
+      visibility: none
+    paint:
+      # Graduated colours by percent white (darker = whiter).
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, pct_white]
+        - "#bdbdbd"      # below 0: no data
+        - 0
+        - "#f1eef6"      # 0-20 %
+        - 20
+        - "#bdc9e1"      # 20-40 %
+        - 40
+        - "#74a9cf"      # 40-60 %
+        - 60
+        - "#2b8cbe"      # 60-80 %
+        - 80
+        - "#045a8d"      # 80-100 %
+      fill-opacity: 0.8
+      fill-outline-color: "rgba(255,255,255,0.6)"
+    interactive:
+      hover:
+        cursor: pointer
+        popup:
+          - strong:
+              - str: "Tract "
+              - property: tract
+          - p:
+              - property: pct_white
+              - str: "% white"
+          - p:
+              - property: white
+              - str: " white of "
+              - property: total
+              - str: " people"
+
+  # Today's 22 municipal borders, for reference in every decade.
+  - id: municipalities-line
+    type: line
+    source:
+      type: geojson
+      url: "data/essex-municipalities.geojson"
+    paint:
+      line-color: "#333333"
+      line-width: 1
+      line-opacity: 0.7
+
+  - id: county-outline
+    type: line
+    source:
+      type: geojson
+      url: "data/essex-county.geojson"
+    paint:
+      line-color: "#b2182b"
+      line-width: 2.5

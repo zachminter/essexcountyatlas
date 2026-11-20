@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Without this line, phones lay the page out at desktop width and the map looks tiny. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Essex County | Essex County Atlas</title>
+  <meta name="description" content="A description of your website">
+
+  <!-- MapLibre's stylesheet. Keep it on the same major version (6) as the import map below. -->
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@6/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="css/site.css">
+  <!-- Tells the browser where "maplibre-gl" lives. The map needs it. -->
+  <script type="importmap">
+    { "imports": { "maplibre-gl": "https://unpkg.com/maplibre-gl@6/dist/maplibre-gl.mjs" } }
+  </script>
+  <!-- Defines <ml-map> and <ml-scrollytelling>. "@0.10" loads the newest 0.10.x release. -->
+  <script type="module" src="https://unpkg.com/@maplibre-yaml/core@0.10/register.js"></script>
+</head>
+<!-- class="bleed": no page padding and no footer, for a page that is one big map. -->
+<body class="bleed">
+  <!-- The header is copied into every page. Changing a link? Change it in every .html file. -->
+  <header class="site-header">
+    <div class="container">
+      <a class="site-name" href="./">Essex County Atlas</a>
+      <nav class="site-nav">
+        <a href="essex-county.html" aria-current="page">Essex County</a>
+        <a href="essex-race.html">Race by decade</a>
+        <a href="essex-education.html">Education by decade</a>
+        <a href="essex-income.html">Income by decade</a>
+        <a href="essex-highways.html">Highways</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!--
+      The map is maps/essex-county.yaml. class="full-page-map" (css/site.css)
+      makes it fill the window below the header.
+    -->
+    <ml-map src="maps/essex-county.yaml" class="full-page-map">
+      <!-- A child with slot="top-left" (or top-right, bottom-left, bottom-right) sits in that corner of the map. -->
+      <div slot="top-left" class="map-note">
+        <strong>Essex County, New Jersey</strong><br>
+        The county and its 22 municipalities. Hover or click a town
+        to see its name.
+      </div>
+    </ml-map>
+  </main>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Without this line, phones lay the page out at desktop width and the map looks tiny. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Essex County income by decade | Essex County Atlas</title>
+  <meta name="description" content="Median income by census tract in Essex County, New Jersey, compared with the US median, 1960 to 2020">
+
+  <!-- MapLibre's stylesheet. Keep it on the same major version (6) as the import map below. -->
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@6/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="css/site.css">
+  <!-- Tells the browser where "maplibre-gl" lives. The map needs it. -->
+  <script type="importmap">
+    { "imports": { "maplibre-gl": "https://unpkg.com/maplibre-gl@6/dist/maplibre-gl.mjs" } }
+  </script>
+  <!-- Defines <ml-map> and <ml-scrollytelling>. "@0.10" loads the newest 0.10.x release. -->
+  <script type="module" src="https://unpkg.com/@maplibre-yaml/core@0.10/register.js"></script>
+</head>
+<!-- class="bleed": no page padding and no footer, for a page that is one big map. -->
+<body class="bleed">
+  <!-- The header is copied into every page. Changing a link? Change it in all the .html files. -->
+  <header class="site-header">
+    <div class="container">
+      <a class="site-name" href="./">Essex County Atlas</a>
+      <nav class="site-nav">
+        <a href="essex-county.html">Essex County</a>
+        <a href="essex-race.html">Race by decade</a>
+        <a href="essex-education.html">Education by decade</a>
+        <a href="essex-income.html" aria-current="page">Income by decade</a>
+        <a href="essex-highways.html">Highways</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!--
+      The map is maps/essex-income.yaml: one layer per census year
+      (income-1960 ... income-2020). The buttons below show one at a time.
+    -->
+    <ml-map src="maps/essex-income.yaml" class="full-page-map">
+      <div slot="top-left" class="decade-panel">
+        <h1>Essex County, NJ: median income vs the US</h1>
+        <div class="decade-buttons" role="group" aria-label="Census year">
+          <!-- One button per layer in maps/essex-income.yaml (1940 and 1950 have no income data) -->
+          <button type="button" data-year="1960">1960</button>
+          <button type="button" data-year="1970">1970</button>
+          <button type="button" data-year="1980">1980</button>
+          <button type="button" data-year="1990">1990</button>
+          <button type="button" data-year="2000">2000</button>
+          <button type="button" data-year="2010">2010</button>
+          <button type="button" data-year="2020">2020</button>
+        </div>
+        <p class="decade-stat"><span id="decade-pct"></span><span id="decade-pct-label"></span></p>
+        <p class="decade-note" id="decade-note"></p>
+
+        <!-- Keep these colours in step with fill-color in maps/essex-income.yaml -->
+        <ul class="decade-legend" style="grid-template-columns: 1fr">
+          <li><span style="background:#01665e"></span>2&times; or more</li>
+          <li><span style="background:#5ab4ac"></span>1.5&ndash;2&times;</li>
+          <li><span style="background:#c7eae5"></span>1.1&ndash;1.5&times;</li>
+          <li><span style="background:#f5f5f5"></span>0.9&ndash;1.1&times; (about the US median)</li>
+          <li><span style="background:#f6e8c3"></span>0.75&ndash;0.9&times;</li>
+          <li><span style="background:#d8b365"></span>0.5&ndash;0.75&times;</li>
+          <li><span style="background:#8c510a"></span>under 0.5&times;</li>
+          <li><span style="background:#a3a3a3"></span>No data</li>
+        </ul>
+        <p class="decade-source">
+          Each tract&rsquo;s median income divided by the US median for the same year: 1&times; matches the US, 2&times; is double. This takes out inflation, so decades compare fairly.
+          Lines are today&rsquo;s municipal borders. Hover a tract for its numbers;
+          use the &larr; &rarr; keys to step through years.
+          Data: <a href="https://www.nhgis.org/">IPUMS NHGIS</a>, US Census Bureau.
+        </p>
+      </div>
+    </ml-map>
+  </main>
+
+  <script type="module">
+    // What the panel says for each year. pct = share of tracts whose median
+    // income is at or above the US median (from data/essex-income-YEAR.geojson).
+    const YEARS = {
+      1940: { pct: null, label: "", note: "The 1940 census didn’t ask about income." },
+      1950: { pct: null, label: "", note: "NHGIS has no 1950 tract data for Essex County." },
+      1960: { pct: 70, label: "of tracts above the US median",
+        note: "Median family income in 1959 vs the US median of $5,660 (households weren’t counted this way yet)." },
+      1970: { pct: 52, label: "of tracts above the US median",
+        note: "Median household income in 1969 vs the US median of $8,361, both estimated from income brackets." },
+      1980: { pct: 38, label: "of tracts above the US median", note: "Median household income in 1979. US median: $16,841." },
+      1990: { pct: 50, label: "of tracts above the US median", note: "Median household income in 1989. US median: $30,056." },
+      2000: { pct: 42, label: "of tracts above the US median", note: "Median household income in 1999. US median: $41,994." },
+      2010: { pct: 40, label: "of tracts above the US median",
+        note: "American Community Survey 2008–2012 (2012 dollars). US median: $53,046." },
+      2020: { pct: 37, label: "of tracts above the US median",
+        note: "American Community Survey 2016–2020 (2020 dollars). US median: $64,994." },
+    };
+    const years = Object.keys(YEARS).map(Number).filter((y) => y >= 1960);
+    const el = document.querySelector("ml-map");
+    const buttons = [...document.querySelectorAll(".decade-buttons button")];
+    let current = 1960;   // first year with income data
+
+    let map = null;   // the MapLibre map inside <ml-map>, once it has loaded
+
+    function show(year) {
+      current = year;
+      for (const y of years) {
+        const id = `income-${y}`;
+        if (map?.getLayer(id)) map.setLayoutProperty(id, "visibility", y === year ? "visible" : "none");
+      }
+      for (const b of buttons) b.setAttribute("aria-pressed", String(Number(b.dataset.year) === year));
+      const info = YEARS[year];
+      document.getElementById("decade-pct").textContent = info.pct === null ? "No data" : `${info.pct}%`;
+      document.getElementById("decade-pct-label").textContent = info.label ? ` ${info.label}` : "";
+      document.getElementById("decade-note").textContent = info.note;
+    }
+
+    for (const b of buttons) b.addEventListener("click", () => show(Number(b.dataset.year)));
+    document.addEventListener("keydown", (e) => {
+      const i = years.indexOf(current);
+      if (e.key === "ArrowRight" && i < years.length - 1) show(years[i + 1]);
+      if (e.key === "ArrowLeft" && i > 0) show(years[i - 1]);
+    });
+    show(current);   // fill in the panel straight away
+
+    // Then, once the map has loaded, show the chosen year's layer.
+    await customElements.whenDefined("ml-map");
+    map = await el.mapReady();
+    show(current);
+  </script>
+</body>
+</html>

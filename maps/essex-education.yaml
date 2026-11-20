@@ -1,0 +1,408 @@
+# yaml-language-server: $schema=https://docs.maplibre-yaml.org/schema/latest/map.schema.json
+#
+# Essex County, NJ: percent of adults (25 and over) in each census tract with
+# a bachelor's degree or higher, one layer per census year. Only one layer is
+# visible at a time; the decade buttons on essex-education.html switch them.
+#
+# 1940-1980 measure "4 or more years of college" (the census asked years of
+# school, not degrees). 1990-2000: bachelor's or higher (census long form).
+# 2010 and 2020: American Community Survey 5-year estimates (2008-2012 and
+# 2016-2020), which replaced the long form.
+#
+# Data: IPUMS NHGIS. Tract shapes are the same snapped shapes as the race map.
+# Each tract has: tract, year, adults, college, pct_college (-1 = no data).
+type: map
+id: essex-education
+config:
+  mapStyle: "https://tiles.openfreemap.org/styles/positron"
+  center: [-74.245, 40.792]
+  zoom: 10.6
+
+controls:
+  navigation:
+    enabled: true
+    position: bottom-right
+
+layers:
+  - id: edu-1940
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-edu-1940.geojson"
+    layout:
+      visibility: visible
+    paint:
+      # Graduated colours by percent with a bachelor's or higher (darker = more).
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, pct_college]
+        - "#bdbdbd"      # below 0: no data
+        - 0
+        - "#edf8e9"      # 0-10 %
+        - 10
+        - "#bae4b3"      # 10-20 %
+        - 20
+        - "#74c476"      # 20-40 %
+        - 40
+        - "#31a354"      # 40-60 %
+        - 60
+        - "#006d2c"      # 60-100 %
+      fill-opacity: 0.8
+      fill-outline-color: "rgba(255,255,255,0.6)"
+    interactive:
+      hover:
+        cursor: pointer
+        popup:
+          - strong:
+              - str: "Tract "
+              - property: tract
+          - p:
+              - property: pct_college
+              - str: "% with a bachelor's or higher"
+          - p:
+              - property: college
+              - str: " of "
+              - property: adults
+              - str: " adults 25+"
+
+  - id: edu-1950
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-edu-1950.geojson"
+    layout:
+      visibility: none
+    paint:
+      # Graduated colours by percent with a bachelor's or higher (darker = more).
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, pct_college]
+        - "#bdbdbd"      # below 0: no data
+        - 0
+        - "#edf8e9"      # 0-10 %
+        - 10
+        - "#bae4b3"      # 10-20 %
+        - 20
+        - "#74c476"      # 20-40 %
+        - 40
+        - "#31a354"      # 40-60 %
+        - 60
+        - "#006d2c"      # 60-100 %
+      fill-opacity: 0.8
+      fill-outline-color: "rgba(255,255,255,0.6)"
+
+  - id: edu-1960
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-edu-1960.geojson"
+    layout:
+      visibility: none
+    paint:
+      # Graduated colours by percent with a bachelor's or higher (darker = more).
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, pct_college]
+        - "#bdbdbd"      # below 0: no data
+        - 0
+        - "#edf8e9"      # 0-10 %
+        - 10
+        - "#bae4b3"      # 10-20 %
+        - 20
+        - "#74c476"      # 20-40 %
+        - 40
+        - "#31a354"      # 40-60 %
+        - 60
+        - "#006d2c"      # 60-100 %
+      fill-opacity: 0.8
+      fill-outline-color: "rgba(255,255,255,0.6)"
+    interactive:
+      hover:
+        cursor: pointer
+        popup:
+          - strong:
+              - str: "Tract "
+              - property: tract
+          - p:
+              - property: pct_college
+              - str: "% with a bachelor's or higher"
+          - p:
+              - property: college
+              - str: " of "
+              - property: adults
+              - str: " adults 25+"
+
+  - id: edu-1970
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-edu-1970.geojson"
+    layout:
+      visibility: none
+    paint:
+      # Graduated colours by percent with a bachelor's or higher (darker = more).
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, pct_college]
+        - "#bdbdbd"      # below 0: no data
+        - 0
+        - "#edf8e9"      # 0-10 %
+        - 10
+        - "#bae4b3"      # 10-20 %
+        - 20
+        - "#74c476"      # 20-40 %
+        - 40
+        - "#31a354"      # 40-60 %
+        - 60
+        - "#006d2c"      # 60-100 %
+      fill-opacity: 0.8
+      fill-outline-color: "rgba(255,255,255,0.6)"
+    interactive:
+      hover:
+        cursor: pointer
+        popup:
+          - strong:
+              - str: "Tract "
+              - property: tract
+          - p:
+              - property: pct_college
+              - str: "% with a bachelor's or higher"
+          - p:
+              - property: college
+              - str: " of "
+              - property: adults
+              - str: " adults 25+"
+
+  - id: edu-1980
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-edu-1980.geojson"
+    layout:
+      visibility: none
+    paint:
+      # Graduated colours by percent with a bachelor's or higher (darker = more).
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, pct_college]
+        - "#bdbdbd"      # below 0: no data
+        - 0
+        - "#edf8e9"      # 0-10 %
+        - 10
+        - "#bae4b3"      # 10-20 %
+        - 20
+        - "#74c476"      # 20-40 %
+        - 40
+        - "#31a354"      # 40-60 %
+        - 60
+        - "#006d2c"      # 60-100 %
+      fill-opacity: 0.8
+      fill-outline-color: "rgba(255,255,255,0.6)"
+    interactive:
+      hover:
+        cursor: pointer
+        popup:
+          - strong:
+              - str: "Tract "
+              - property: tract
+          - p:
+              - property: pct_college
+              - str: "% with a bachelor's or higher"
+          - p:
+              - property: college
+              - str: " of "
+              - property: adults
+              - str: " adults 25+"
+
+  - id: edu-1990
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-edu-1990.geojson"
+    layout:
+      visibility: none
+    paint:
+      # Graduated colours by percent with a bachelor's or higher (darker = more).
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, pct_college]
+        - "#bdbdbd"      # below 0: no data
+        - 0
+        - "#edf8e9"      # 0-10 %
+        - 10
+        - "#bae4b3"      # 10-20 %
+        - 20
+        - "#74c476"      # 20-40 %
+        - 40
+        - "#31a354"      # 40-60 %
+        - 60
+        - "#006d2c"      # 60-100 %
+      fill-opacity: 0.8
+      fill-outline-color: "rgba(255,255,255,0.6)"
+    interactive:
+      hover:
+        cursor: pointer
+        popup:
+          - strong:
+              - str: "Tract "
+              - property: tract
+          - p:
+              - property: pct_college
+              - str: "% with a bachelor's or higher"
+          - p:
+              - property: college
+              - str: " of "
+              - property: adults
+              - str: " adults 25+"
+
+  - id: edu-2000
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-edu-2000.geojson"
+    layout:
+      visibility: none
+    paint:
+      # Graduated colours by percent with a bachelor's or higher (darker = more).
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, pct_college]
+        - "#bdbdbd"      # below 0: no data
+        - 0
+        - "#edf8e9"      # 0-10 %
+        - 10
+        - "#bae4b3"      # 10-20 %
+        - 20
+        - "#74c476"      # 20-40 %
+        - 40
+        - "#31a354"      # 40-60 %
+        - 60
+        - "#006d2c"      # 60-100 %
+      fill-opacity: 0.8
+      fill-outline-color: "rgba(255,255,255,0.6)"
+    interactive:
+      hover:
+        cursor: pointer
+        popup:
+          - strong:
+              - str: "Tract "
+              - property: tract
+          - p:
+              - property: pct_college
+              - str: "% with a bachelor's or higher"
+          - p:
+              - property: college
+              - str: " of "
+              - property: adults
+              - str: " adults 25+"
+
+  - id: edu-2010
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-edu-2010.geojson"
+    layout:
+      visibility: none
+    paint:
+      # Graduated colours by percent with a bachelor's or higher (darker = more).
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, pct_college]
+        - "#bdbdbd"      # below 0: no data
+        - 0
+        - "#edf8e9"      # 0-10 %
+        - 10
+        - "#bae4b3"      # 10-20 %
+        - 20
+        - "#74c476"      # 20-40 %
+        - 40
+        - "#31a354"      # 40-60 %
+        - 60
+        - "#006d2c"      # 60-100 %
+      fill-opacity: 0.8
+      fill-outline-color: "rgba(255,255,255,0.6)"
+    interactive:
+      hover:
+        cursor: pointer
+        popup:
+          - strong:
+              - str: "Tract "
+              - property: tract
+          - p:
+              - property: pct_college
+              - str: "% with a bachelor's or higher"
+          - p:
+              - property: college
+              - str: " of "
+              - property: adults
+              - str: " adults 25+"
+
+  - id: edu-2020
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-edu-2020.geojson"
+    layout:
+      visibility: none
+    paint:
+      # Graduated colours by percent with a bachelor's or higher (darker = more).
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, pct_college]
+        - "#bdbdbd"      # below 0: no data
+        - 0
+        - "#edf8e9"      # 0-10 %
+        - 10
+        - "#bae4b3"      # 10-20 %
+        - 20
+        - "#74c476"      # 20-40 %
+        - 40
+        - "#31a354"      # 40-60 %
+        - 60
+        - "#006d2c"      # 60-100 %
+      fill-opacity: 0.8
+      fill-outline-color: "rgba(255,255,255,0.6)"
+    interactive:
+      hover:
+        cursor: pointer
+        popup:
+          - strong:
+              - str: "Tract "
+              - property: tract
+          - p:
+              - property: pct_college
+              - str: "% with a bachelor's or higher"
+          - p:
+              - property: college
+              - str: " of "
+              - property: adults
+              - str: " adults 25+"
+
+  # Today's 22 municipal borders, for reference in every decade.
+  - id: municipalities-line
+    type: line
+    source:
+      type: geojson
+      url: "data/essex-municipalities.geojson"
+    paint:
+      line-color: "#333333"
+      line-width: 1
+      line-opacity: 0.7
+
+  - id: county-outline
+    type: line
+    source:
+      type: geojson
+      url: "data/essex-county.geojson"
+    paint:
+      line-color: "#b2182b"
+      line-width: 2.5

@@ -1,0 +1,463 @@
+# yaml-language-server: $schema=https://docs.maplibre-yaml.org/schema/latest/map.schema.json
+#
+# Essex County, NJ: each census tract's median income compared with the US
+# median for the same year. ratio = tract median / US median, so 1.0 = the US
+# median, 2.0 = twice it, 0.5 = half. Dividing by the US median takes out
+# inflation and national income growth, so the decades can be compared.
+#
+# 1960: median FAMILY income in 1959 (households weren't tabulated), vs the US
+#       median family income ($5,660, 1960 Census).
+# 1970: median household income in 1969, calculated from income brackets for
+#       both the tracts and the US, the same way.
+# 1980-2000: median household income (census long form).
+# 2010, 2020: American Community Survey 5-year estimates (2008-2012, 2016-2020).
+# No income data: 1940 (not asked) and 1950 (no Essex tract data in NHGIS).
+#
+# Data: IPUMS NHGIS. Tract shapes are the same snapped shapes as the race map.
+# Each tract has: tract, year, median, national, ratio, pct_of_national, note,
+# median_label / national_label (the same numbers with commas, for pop-ups)
+# (ratio is -1 where there is no data).
+type: map
+id: essex-income
+config:
+  mapStyle: "https://tiles.openfreemap.org/styles/positron"
+  center: [-74.245, 40.792]
+  zoom: 10.6
+
+controls:
+  navigation:
+    enabled: true
+    position: bottom-right
+
+layers:
+  - id: income-1940
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-income-1940.geojson"
+    layout:
+      visibility: none
+    paint:
+      # Diverging colours around 1.0 (the US median): browns below, teals above.
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, ratio]
+        - "#a3a3a3"      # below 0: no data
+        - 0
+        - "#8c510a"      # under 0.5x  (less than half the US median)
+        - 0.5
+        - "#d8b365"      # 0.5-0.75x
+        - 0.75
+        - "#f6e8c3"      # 0.75-0.9x
+        - 0.9
+        - "#f5f5f5"      # 0.9-1.1x   (about the US median)
+        - 1.1
+        - "#c7eae5"      # 1.1-1.5x
+        - 1.5
+        - "#5ab4ac"      # 1.5-2x
+        - 2
+        - "#01665e"      # 2x or more
+      fill-opacity: 0.85
+      fill-outline-color: "rgba(120,120,120,0.35)"
+
+  - id: income-1950
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-income-1950.geojson"
+    layout:
+      visibility: none
+    paint:
+      # Diverging colours around 1.0 (the US median): browns below, teals above.
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, ratio]
+        - "#a3a3a3"      # below 0: no data
+        - 0
+        - "#8c510a"      # under 0.5x  (less than half the US median)
+        - 0.5
+        - "#d8b365"      # 0.5-0.75x
+        - 0.75
+        - "#f6e8c3"      # 0.75-0.9x
+        - 0.9
+        - "#f5f5f5"      # 0.9-1.1x   (about the US median)
+        - 1.1
+        - "#c7eae5"      # 1.1-1.5x
+        - 1.5
+        - "#5ab4ac"      # 1.5-2x
+        - 2
+        - "#01665e"      # 2x or more
+      fill-opacity: 0.85
+      fill-outline-color: "rgba(120,120,120,0.35)"
+
+  - id: income-1960
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-income-1960.geojson"
+    layout:
+      visibility: visible
+    paint:
+      # Diverging colours around 1.0 (the US median): browns below, teals above.
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, ratio]
+        - "#a3a3a3"      # below 0: no data
+        - 0
+        - "#8c510a"      # under 0.5x  (less than half the US median)
+        - 0.5
+        - "#d8b365"      # 0.5-0.75x
+        - 0.75
+        - "#f6e8c3"      # 0.75-0.9x
+        - 0.9
+        - "#f5f5f5"      # 0.9-1.1x   (about the US median)
+        - 1.1
+        - "#c7eae5"      # 1.1-1.5x
+        - 1.5
+        - "#5ab4ac"      # 1.5-2x
+        - 2
+        - "#01665e"      # 2x or more
+      fill-opacity: 0.85
+      fill-outline-color: "rgba(120,120,120,0.35)"
+    interactive:
+      hover:
+        cursor: pointer
+        popup:
+          - strong:
+              - str: "Tract "
+              - property: tract
+          - p:
+              - str: "Median income: $"
+              - property: median_label
+                else: "not reported"
+              - str: " "
+              - property: note
+                else: ""
+          - p:
+              - property: pct_of_national
+              - str: "% of the US median ($"
+              - property: national_label
+              - str: ")"
+
+  - id: income-1970
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-income-1970.geojson"
+    layout:
+      visibility: none
+    paint:
+      # Diverging colours around 1.0 (the US median): browns below, teals above.
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, ratio]
+        - "#a3a3a3"      # below 0: no data
+        - 0
+        - "#8c510a"      # under 0.5x  (less than half the US median)
+        - 0.5
+        - "#d8b365"      # 0.5-0.75x
+        - 0.75
+        - "#f6e8c3"      # 0.75-0.9x
+        - 0.9
+        - "#f5f5f5"      # 0.9-1.1x   (about the US median)
+        - 1.1
+        - "#c7eae5"      # 1.1-1.5x
+        - 1.5
+        - "#5ab4ac"      # 1.5-2x
+        - 2
+        - "#01665e"      # 2x or more
+      fill-opacity: 0.85
+      fill-outline-color: "rgba(120,120,120,0.35)"
+    interactive:
+      hover:
+        cursor: pointer
+        popup:
+          - strong:
+              - str: "Tract "
+              - property: tract
+          - p:
+              - str: "Median income: $"
+              - property: median_label
+                else: "not reported"
+              - str: " "
+              - property: note
+                else: ""
+          - p:
+              - property: pct_of_national
+              - str: "% of the US median ($"
+              - property: national_label
+              - str: ")"
+
+  - id: income-1980
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-income-1980.geojson"
+    layout:
+      visibility: none
+    paint:
+      # Diverging colours around 1.0 (the US median): browns below, teals above.
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, ratio]
+        - "#a3a3a3"      # below 0: no data
+        - 0
+        - "#8c510a"      # under 0.5x  (less than half the US median)
+        - 0.5
+        - "#d8b365"      # 0.5-0.75x
+        - 0.75
+        - "#f6e8c3"      # 0.75-0.9x
+        - 0.9
+        - "#f5f5f5"      # 0.9-1.1x   (about the US median)
+        - 1.1
+        - "#c7eae5"      # 1.1-1.5x
+        - 1.5
+        - "#5ab4ac"      # 1.5-2x
+        - 2
+        - "#01665e"      # 2x or more
+      fill-opacity: 0.85
+      fill-outline-color: "rgba(120,120,120,0.35)"
+    interactive:
+      hover:
+        cursor: pointer
+        popup:
+          - strong:
+              - str: "Tract "
+              - property: tract
+          - p:
+              - str: "Median income: $"
+              - property: median_label
+                else: "not reported"
+              - str: " "
+              - property: note
+                else: ""
+          - p:
+              - property: pct_of_national
+              - str: "% of the US median ($"
+              - property: national_label
+              - str: ")"
+
+  - id: income-1990
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-income-1990.geojson"
+    layout:
+      visibility: none
+    paint:
+      # Diverging colours around 1.0 (the US median): browns below, teals above.
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, ratio]
+        - "#a3a3a3"      # below 0: no data
+        - 0
+        - "#8c510a"      # under 0.5x  (less than half the US median)
+        - 0.5
+        - "#d8b365"      # 0.5-0.75x
+        - 0.75
+        - "#f6e8c3"      # 0.75-0.9x
+        - 0.9
+        - "#f5f5f5"      # 0.9-1.1x   (about the US median)
+        - 1.1
+        - "#c7eae5"      # 1.1-1.5x
+        - 1.5
+        - "#5ab4ac"      # 1.5-2x
+        - 2
+        - "#01665e"      # 2x or more
+      fill-opacity: 0.85
+      fill-outline-color: "rgba(120,120,120,0.35)"
+    interactive:
+      hover:
+        cursor: pointer
+        popup:
+          - strong:
+              - str: "Tract "
+              - property: tract
+          - p:
+              - str: "Median income: $"
+              - property: median_label
+                else: "not reported"
+              - str: " "
+              - property: note
+                else: ""
+          - p:
+              - property: pct_of_national
+              - str: "% of the US median ($"
+              - property: national_label
+              - str: ")"
+
+  - id: income-2000
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-income-2000.geojson"
+    layout:
+      visibility: none
+    paint:
+      # Diverging colours around 1.0 (the US median): browns below, teals above.
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, ratio]
+        - "#a3a3a3"      # below 0: no data
+        - 0
+        - "#8c510a"      # under 0.5x  (less than half the US median)
+        - 0.5
+        - "#d8b365"      # 0.5-0.75x
+        - 0.75
+        - "#f6e8c3"      # 0.75-0.9x
+        - 0.9
+        - "#f5f5f5"      # 0.9-1.1x   (about the US median)
+        - 1.1
+        - "#c7eae5"      # 1.1-1.5x
+        - 1.5
+        - "#5ab4ac"      # 1.5-2x
+        - 2
+        - "#01665e"      # 2x or more
+      fill-opacity: 0.85
+      fill-outline-color: "rgba(120,120,120,0.35)"
+    interactive:
+      hover:
+        cursor: pointer
+        popup:
+          - strong:
+              - str: "Tract "
+              - property: tract
+          - p:
+              - str: "Median income: $"
+              - property: median_label
+                else: "not reported"
+              - str: " "
+              - property: note
+                else: ""
+          - p:
+              - property: pct_of_national
+              - str: "% of the US median ($"
+              - property: national_label
+              - str: ")"
+
+  - id: income-2010
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-income-2010.geojson"
+    layout:
+      visibility: none
+    paint:
+      # Diverging colours around 1.0 (the US median): browns below, teals above.
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, ratio]
+        - "#a3a3a3"      # below 0: no data
+        - 0
+        - "#8c510a"      # under 0.5x  (less than half the US median)
+        - 0.5
+        - "#d8b365"      # 0.5-0.75x
+        - 0.75
+        - "#f6e8c3"      # 0.75-0.9x
+        - 0.9
+        - "#f5f5f5"      # 0.9-1.1x   (about the US median)
+        - 1.1
+        - "#c7eae5"      # 1.1-1.5x
+        - 1.5
+        - "#5ab4ac"      # 1.5-2x
+        - 2
+        - "#01665e"      # 2x or more
+      fill-opacity: 0.85
+      fill-outline-color: "rgba(120,120,120,0.35)"
+    interactive:
+      hover:
+        cursor: pointer
+        popup:
+          - strong:
+              - str: "Tract "
+              - property: tract
+          - p:
+              - str: "Median income: $"
+              - property: median_label
+                else: "not reported"
+              - str: " "
+              - property: note
+                else: ""
+          - p:
+              - property: pct_of_national
+              - str: "% of the US median ($"
+              - property: national_label
+              - str: ")"
+
+  - id: income-2020
+    type: fill
+    source:
+      type: geojson
+      url: "data/essex-income-2020.geojson"
+    layout:
+      visibility: none
+    paint:
+      # Diverging colours around 1.0 (the US median): browns below, teals above.
+      # Grey = no data (-1). Change the colours or class breaks here.
+      fill-color:
+        - step
+        - [get, ratio]
+        - "#a3a3a3"      # below 0: no data
+        - 0
+        - "#8c510a"      # under 0.5x  (less than half the US median)
+        - 0.5
+        - "#d8b365"      # 0.5-0.75x
+        - 0.75
+        - "#f6e8c3"      # 0.75-0.9x
+        - 0.9
+        - "#f5f5f5"      # 0.9-1.1x   (about the US median)
+        - 1.1
+        - "#c7eae5"      # 1.1-1.5x
+        - 1.5
+        - "#5ab4ac"      # 1.5-2x
+        - 2
+        - "#01665e"      # 2x or more
+      fill-opacity: 0.85
+      fill-outline-color: "rgba(120,120,120,0.35)"
+    interactive:
+      hover:
+        cursor: pointer
+        popup:
+          - strong:
+              - str: "Tract "
+              - property: tract
+          - p:
+              - str: "Median income: $"
+              - property: median_label
+                else: "not reported"
+              - str: " "
+              - property: note
+                else: ""
+          - p:
+              - property: pct_of_national
+              - str: "% of the US median ($"
+              - property: national_label
+              - str: ")"
+
+  # Today's 22 municipal borders, for reference in every decade.
+  - id: municipalities-line
+    type: line
+    source:
+      type: geojson
+      url: "data/essex-municipalities.geojson"
+    paint:
+      line-color: "#333333"
+      line-width: 1
+      line-opacity: 0.7
+
+  - id: county-outline
+    type: line
+    source:
+      type: geojson
+      url: "data/essex-county.geojson"
+    paint:
+      line-color: "#b2182b"
+      line-width: 2.5

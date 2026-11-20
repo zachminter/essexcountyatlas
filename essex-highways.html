@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Without this line, phones lay the page out at desktop width and the map looks tiny. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>New Jersey highways | Essex County Atlas</title>
+  <meta name="description" content="When each section of the highways that cross Essex County opened, followed across New Jersey">
+
+  <!-- MapLibre's stylesheet. Keep it on the same major version (6) as the import map below. -->
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@6/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="css/site.css">
+  <!-- Tells the browser where "maplibre-gl" lives. The map needs it. -->
+  <script type="importmap">
+    { "imports": { "maplibre-gl": "https://unpkg.com/maplibre-gl@6/dist/maplibre-gl.mjs" } }
+  </script>
+  <!-- Defines <ml-map> and <ml-scrollytelling>. "@0.10" loads the newest 0.10.x release. -->
+  <script type="module" src="https://unpkg.com/@maplibre-yaml/core@0.10/register.js"></script>
+</head>
+<!-- class="bleed": no page padding and no footer, for a page that is one big map. -->
+<body class="bleed">
+  <!-- The header is copied into every page. Changing a link? Change it in all the .html files. -->
+  <header class="site-header">
+    <div class="container">
+      <a class="site-name" href="./">Essex County Atlas</a>
+      <nav class="site-nav">
+        <a href="essex-county.html">Essex County</a>
+        <a href="essex-race.html">Race by decade</a>
+        <a href="essex-education.html">Education by decade</a>
+        <a href="essex-income.html">Income by decade</a>
+        <a href="essex-highways.html" aria-current="page">Highways</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!--
+      The map is maps/essex-highways.yaml (data: data/nj-highways.geojson). The buttons below show only the
+      highway sections open by the end of the chosen decade.
+    -->
+    <ml-map src="maps/essex-highways.yaml" class="full-page-map">
+      <div slot="top-left" class="decade-panel">
+        <h1>Essex County&rsquo;s highways across New Jersey: when each section opened</h1>
+        <div class="view-buttons" role="group" aria-label="Map view">
+          <button type="button" data-view="nj">All of New Jersey</button>
+          <button type="button" data-view="essex">Essex County</button>
+        </div>
+        <div class="decade-buttons" role="group" aria-label="Show highways open by the end of">
+          <button type="button" data-year="1939">By 1939</button>
+          <button type="button" data-year="1949">1940s</button>
+          <button type="button" data-year="1959">1950s</button>
+          <button type="button" data-year="1969">1960s</button>
+          <button type="button" data-year="1979">1970s</button>
+          <button type="button" data-year="1989">1980s</button>
+          <button type="button" data-year="1999">1990s</button>
+          <button type="button" data-year="9999">Today</button>
+        </div>
+        <p class="decade-stat"><span id="decade-pct"></span><span id="decade-pct-label"></span></p>
+        <ul class="decade-note hwy-list" id="hwy-list"></ul>
+
+        <!-- Keep these colours in step with line-color in maps/essex-highways.yaml -->
+        <ul class="decade-legend">
+          <li><span style="background:#0d0887"></span>1920s</li>
+          <li><span style="background:#5302a3"></span>1930s</li>
+          <li><span style="background:#8b0aa5"></span>1940s</li>
+          <li><span style="background:#b83289"></span>1950s</li>
+          <li><span style="background:#db5c68"></span>1960s</li>
+          <li><span style="background:#f48849"></span>1970s</li>
+          <li><span style="background:#febc2a"></span>1980s</li>
+          <li><span style="background:#d4e157"></span>1990s and later</li>
+          <li><span style="background:#9e9e9e"></span>Date not found</li>
+          <li><span class="dash"></span>Approximate date</li>
+        </ul>
+        <p class="decade-source">
+          The nine highways that cross Essex County (red outline), followed
+          statewide. Thicker lines opened during the chosen decade. Hover a road
+          for its section and date. Section ends are placed by exit number, so
+          they are approximate. Today&rsquo;s highways are hidden from the basemap.
+          Roads: OpenStreetMap. Dates: highway histories on Wikipedia and
+          <a href="http://www.nycroads.com/">NYCRoads</a>.
+        </p>
+      </div>
+    </ml-map>
+  </main>
+
+  <script type="module">
+    const LAYERS = ["hwy-casing", "hwy-exact", "hwy-approx"];
+    const CONFIDENCE = { "hwy-exact": ["==", ["get", "confidence"], "exact"],
+                         "hwy-approx": ["!=", ["get", "confidence"], "exact"] };
+    const el = document.querySelector("ml-map");
+    const buttons = [...document.querySelectorAll(".decade-buttons button")];
+    const cutoffs = buttons.map((b) => Number(b.dataset.year));
+    let current = 9999;
+    let sections = [];   // properties of every section, from the data file
+    let map = null;      // the MapLibre map inside <ml-map>, once loaded
+
+    const decadeName = (end) => (end === 9999 ? "today" : end === cutoffs[0] ? "1939" : `the end of the ${end - 9}s`);
+
+    function show(end) {
+      current = end;
+      // First year counted as "new" for this button (the first button also
+      // covers the 1920s; "Today" covers anything after 1999 or undated).
+      const prev = cutoffs[cutoffs.indexOf(end) - 1];
+      const start = prev === undefined ? 0 : prev + 1;
+      for (const b of buttons) b.setAttribute("aria-pressed", String(Number(b.dataset.year) === end));
+
+      // Panel: how many sections are open, and what opened this decade,
+      // grouped by road so a busy decade stays short.
+      const open = sections.filter((s) => s.opened <= end);
+      const opened = sections.filter((s) => s.opened >= start && s.opened <= end);
+      document.getElementById("decade-pct").textContent = `${open.length} of ${sections.length}`;
+      document.getElementById("decade-pct-label").textContent = ` sections open by ${decadeName(end)}`;
+      const byRoad = new Map();
+      for (const s of opened) byRoad.set(s.road, [...(byRoad.get(s.road) || []), s]);
+      const items = [...byRoad.entries()]
+        .sort((a, b) => Math.min(...a[1].map((s) => s.opened)) - Math.min(...b[1].map((s) => s.opened)))
+        .map(([road, list]) => {
+          if (list.length === 1) return `${road}: ${list[0].section} (${list[0].date_text})`;
+          const ys = list.map((s) => s.opened).filter((y) => y !== 9999);
+          const span = ys.length ? (Math.min(...ys) === Math.max(...ys) ? `${ys[0]}` : `${Math.min(...ys)}–${Math.max(...ys)}`) : "dates not found";
+          return `${road}: ${list.length} sections (${span})`;
+        });
+      const list = document.getElementById("hwy-list");
+      list.replaceChildren(...(items.length ? items : ["No new sections opened this decade."]).map((t) => {
+        const li = document.createElement("li");
+        li.textContent = t;
+        return li;
+      }));
+
+      if (!map) return;
+      // Show only sections open by the end of the decade; make new ones thicker.
+      const isNew = [">=", ["get", "opened"], start];
+      const width = (thin, thick) => ["interpolate", ["linear"], ["zoom"],
+        7, ["case", isNew, thick[0], thin[0]], 12, ["case", isNew, thick[1], thin[1]]];
+      for (const id of LAYERS) {
+        if (!map.getLayer(id)) continue;
+        const byYear = ["<=", ["get", "opened"], end];
+        map.setFilter(id, CONFIDENCE[id] ? ["all", CONFIDENCE[id], byYear] : byYear);
+        map.setPaintProperty(id, "line-width",
+          id === "hwy-casing" ? width([3, 7], [5, 10]) : width([1.6, 4], [3.2, 6.5]));
+      }
+    }
+
+    // View buttons: the whole state, or zoomed in on Essex County.
+    const VIEWS = { nj: [[-75.6, 38.9], [-73.9, 41.36]], essex: [[-74.38, 40.67], [-74.11, 40.91]] };
+    for (const b of document.querySelectorAll(".view-buttons button")) {
+      b.addEventListener("click", () => map?.fitBounds(VIEWS[b.dataset.view], { padding: 40 }));
+    }
+
+    for (const b of buttons) b.addEventListener("click", () => show(Number(b.dataset.year)));
+    document.addEventListener("keydown", (e) => {
+      const i = cutoffs.indexOf(current);
+      if (e.key === "ArrowRight" && i < cutoffs.length - 1) show(cutoffs[i + 1]);
+      if (e.key === "ArrowLeft" && i > 0) show(cutoffs[i - 1]);
+    });
+
+    const data = await (await fetch("data/nj-highways.geojson")).json();
+    sections = data.features.map((f) => f.properties);
+    show(current);
+
+    await customElements.whenDefined("ml-map");
+    map = await el.mapReady();
+    // Hide today's highways (and their number shields) drawn by the basemap,
+    // so earlier decades don't show roads that weren't built yet.
+    for (const layer of map.getStyle().layers) {
+      if (/motorway|shield/.test(layer.id)) map.setLayoutProperty(layer.id, "visibility", "none");
+    }
+    show(current);
+  </script>
+</body>
+</html>

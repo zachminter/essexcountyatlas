@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Without this line, phones lay the page out at desktop width. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Home | Essex County Atlas</title>
+  <meta name="description" content="Maps of Essex County, New Jersey, by census tract and decade, 1940 to 2020.">
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+  <!-- The header is copied into every page. Changing a link? Change it in every .html file. -->
+  <header class="site-header">
+    <div class="container">
+      <a class="site-name" href="./" aria-current="page">Essex County Atlas</a>
+      <nav class="site-nav">
+        <a href="essex-county.html">Essex County</a>
+        <a href="essex-race.html">Race by decade</a>
+        <a href="essex-education.html">Education by decade</a>
+        <a href="essex-income.html">Income by decade</a>
+        <a href="essex-highways.html">Highways</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container home">
+      <h4>Essex County, New Jersey, decade by decade <span aria-hidden="true">🗺️</span></h4>
+
+      <h2>About</h2>
+      <p>
+        These maps follow how Essex County changed from 1940 to 2020, using
+        census tract data from <a href="https://www.nhgis.org/">IPUMS NHGIS</a>.
+      </p>
+      <ul>
+        <li><a href="essex-county.html">Essex County</a>: the county and its municipalities.</li>
+        <li><a href="essex-race.html">Race by decade</a>: percent white by census tract.</li>
+        <li><a href="essex-education.html">Education by decade</a>: share of adults with four or more years of college.</li>
+        <li><a href="essex-income.html">Income by decade</a>: median household income by tract compared with the US median.</li>
+        <li><a href="essex-highways.html">Highways</a>: the highway network through the county.</li>
+      </ul>
+
+      <h2>About the data</h2>
+      <p>
+        Before 1960, census tracts covered only Newark, so the 1940 and 1950
+        maps show the city alone. The census did not publish tract-level race
+        counts for 1950. Questions and definitions also change from one census
+        to the next, so compare decades with care.
+      </p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">&copy; Essex County Atlas</div>
+  </footer>
+</body>
+</html>

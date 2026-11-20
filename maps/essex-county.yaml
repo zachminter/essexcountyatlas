@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=https://docs.maplibre-yaml.org/schema/latest/map.schema.json
+#
+# Essex County, New Jersey: the county outline and its 22 municipalities.
+# Boundaries: US Census Bureau TIGERweb (county FIPS 34013), saved in data/.
+type: map
+id: essex-county
+config:
+  # A light, label-friendly basemap (free, no key) so the county stands out.
+  mapStyle: "https://tiles.openfreemap.org/styles/positron"
+  center: [-74.245, 40.792]
+  zoom: 10.6
+
+controls:
+  navigation:
+    enabled: true
+    position: bottom-right
+
+legend:
+  position: bottom-left
+
+layers:
+  # The 22 municipalities: a light fill so you can hover each one for its name.
+  - id: municipalities-fill
+    type: fill
+    label: Municipalities
+    source:
+      type: geojson
+      url: "data/essex-municipalities.geojson"
+    paint:
+      fill-color: "#2166ac"
+      fill-opacity: 0.08
+    legend: false
+    interactive:
+      hover:
+        cursor: pointer
+        popup:
+          - strong:
+              - property: BASENAME
+      click:
+        popup:
+          - h3:
+              - property: BASENAME
+          - p:
+              - property: NAME
+
+  # Thin lines between municipalities.
+  - id: municipalities-line
+    type: line
+    source:
+      type: geojson
+      url: "data/essex-municipalities.geojson"
+    paint:
+      line-color: "#2166ac"
+      line-width: 0.8
+      line-opacity: 0.6
+    legend: { label: Municipal boundary, color: "#2166ac", shape: line }
+
+  # The county outline, drawn on top.
+  - id: county-outline
+    type: line
+    source:
+      type: geojson
+      url: "data/essex-county.geojson"
+    paint:
+      line-color: "#b2182b"
+      line-width: 3
+    legend: { label: Essex County, color: "#b2182b", shape: line }
